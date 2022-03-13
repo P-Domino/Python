@@ -42,9 +42,10 @@ bigNumber = 1_000_000
 
 #### Using strings 
 #### Two types 
-#### 1) "" ; 2) ''
+#### 1) "" ; 2) ''; 3) """ """
 #### 1) only letters ex. 'Dominik'
 #### 2) characters and letters ex. "I'm Dominik."
+#### 3) Multiline text
 
 ##### Lists
 ##### ex. 
@@ -52,4 +53,3 @@ bigNumber = 1_000_000
 someList = []
 
 ##### the rule is the same as in the other langueages, it starts with index: 0
-
