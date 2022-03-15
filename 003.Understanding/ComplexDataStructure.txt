@@ -1,0 +1,8 @@
+Itterables Overview
+List ['Milk', 'Honey', 'Milk'] #Mutable, ordered list, duplicates allowed, mostly only one type
+
+set {'Milk', 'Honey'} # Mutable, unordered list, no duplicates, mostly on only one type
+
+Tuple ('Milk', 'Honey')/  (12, 'twelve') # Immutable, ordered list, duplicates allowed, often mixed types
+
+Dictionaries {'name': 'Milk', 'n': 2 } # Mutable, unordered map, no duplicates keys, often mixed types
