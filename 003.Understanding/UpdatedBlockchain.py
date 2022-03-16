@@ -1,6 +1,3 @@
-#Initializing our (empty) blockchain list
-from opcode import hascompare
-
 MINNINGREWARD = 10 
 
 genesisBlock = {
@@ -19,6 +16,8 @@ def hashBlock(block):
 
 def getBalance(participant):
     txSender = [[tx['amount'] for tx in block['transactions'] if tx['sender'] == participant] for block in blockchain]
+    openTxSender = [tx['amount'] for tx in openTransactions if tx['sender'] == participant]
+    txSender.append(openTxSender)
     amountSent = 0
     for tx in txSender:
         if len(tx) > 0:
@@ -37,6 +36,12 @@ def getLastBlockchainValue():
     if len(blockchain) < 1:
         return None
     return blockchain[-1]
+
+
+def verifyTransaction(transaction):
+    senderBalance = getBalance(transaction['sender'])
+    return senderBalance >= transaction['amount']
+        
 
 """ This function accepts two arguments.
     One required (transactionAmount) and one optional one (lastTransaction)
@@ -57,26 +62,30 @@ def addTransaction(recipient, sender = owner, amount = 1.0):
         'recipient': recipient, 
         'amount': amount
     }
-    openTransactions.append(transaction)
-    participants.add(sender)
-    participants.add(recipient)
+    if verifyTransaction(transaction):
+        openTransactions.append(transaction)
+        participants.add(sender)
+        participants.add(recipient)
+        return True
+    else: 
+        return False
 
 def mineBlock():
     lastBlock = blockchain[-1]
-    hashedBlock = hashBlock
-    print(hashedBlock)
+    hashedBlock = hashBlock(lastBlock)
     # the same as above with use of for loop 
     # for key in lastBlock:
     #     value = lastBlock[key]
     #     hashedBlock = hashedBlock + str(value)
-    print(hashedBlock)
     rewardTransaction = {
         'sender': 'MINNING',
         'recipient': owner,
         'amount': MINNINGREWARD 
     }
+    copiedTransactions = openTransactions[:]
+    copiedTransactions.append(rewardTransaction)
     block = {
-        'previousHash': 'XYZ', # entered dummy for educational purposes 
+        'previousHash': hashedBlock, 
         'index': len(blockchain), 
         'transactions': openTransactions,
     } 
@@ -111,8 +120,6 @@ def verifyChain():
         if block['previousHash'] != hashBlock(blockchain[index-1]):
             return False
     return True
-
-    
     # Old Logic
     # isValid = True
     # for blockIndex in range(len(blockchain)):
@@ -123,6 +130,18 @@ def verifyChain():
     #     elif blockchain[blockIndex][0] == blockchain[blockIndex - 1]:
     #         isValid = True
     #     else:
+    #         isValid = False
+    # return isValid
+
+
+def verifyTransactions():
+    return all([verifyTransaction(tx) for tx in openTransactions])
+    # Old logic replaced with list comperhension
+    #  isValid = True
+    # for tx in openTransactions:
+    #     if verifyTransaction(tx):
+    #         isValid = True
+    #     else: 
     #         isValid = False
     # return isValid
 
@@ -138,6 +157,7 @@ while waitingForUserInput:
     print('2. Mine a new block')
     print('3. Output the blockchain blocks')
     print('4: Output participants')
+    print('5: Check transactions validity')
     print('h: Manipulate the chain')
     print('q: Quit')
     userChoice = getUserChoice()
@@ -145,7 +165,10 @@ while waitingForUserInput:
         txData = getTransactionValue()
         recipient, amount = txData
         # Add the transaction to the blockchain
-        addTransaction(recipient, amount = amount)
+        if addTransaction(recipient, amount = amount):
+            print('Added Transactions!')
+        else:
+            print('Transaction Failed!')
         print(openTransactions)
     elif userChoice == '2':
         if mineBlock():
@@ -154,6 +177,11 @@ while waitingForUserInput:
         printBlockchainElements()
     elif userChoice == '4':
         print(participants)
+    elif userChoice == '5':
+        if verifyTransactions():
+            print('All transactions are valid.')
+        else:
+            print('There are invalid operation.')
     elif userChoice == 'h':
         # Make sure that you don't try to "hack" the blockchain if it's empty
         if len(blockchain) >= 1:
