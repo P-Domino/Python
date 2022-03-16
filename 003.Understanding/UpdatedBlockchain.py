@@ -1,6 +1,8 @@
 #Initializing our (empty) blockchain list
 from opcode import hascompare
 
+MINNINGREWARD = 10 
+
 genesisBlock = {
     'previousHash': '', 
     'index': 0, 
@@ -14,6 +16,21 @@ participants = {'Dominik'}
 def hashBlock(block):
     return '-'.join([str(block[key]) for key in block])
 
+
+def getBalance(participant):
+    txSender = [[tx['amount'] for tx in block['transactions'] if tx['sender'] == participant] for block in blockchain]
+    amountSent = 0
+    for tx in txSender:
+        if len(tx) > 0:
+            amountSent += tx[0]
+    txRecipient = [[tx['amount'] for tx in block['transactions'] if tx['recipient'] == participant] for block in blockchain]
+    amountReceived = 0
+    for tx in txRecipient:
+        if len(tx) > 0:
+            amountReceived += tx[0]
+    balance = amountReceived - amountSent
+    return balance
+    
 
 def getLastBlockchainValue():
     """Returns the last value of the current blockchain"""
@@ -30,6 +47,7 @@ def addTransaction(recipient, sender = owner, amount = 1.0):
     """Append a new value as well as the last blockchain value to the blockchain
 
        Arguments:
+
         :sender: sender of the coins.
         :recipient: The recipient of the coins .
         :amount: The amount of the coins sent with the transaction (default = 1.0).
@@ -47,19 +65,23 @@ def mineBlock():
     lastBlock = blockchain[-1]
     hashedBlock = hashBlock
     print(hashedBlock)
-    
     # the same as above with use of for loop 
     # for key in lastBlock:
     #     value = lastBlock[key]
     #     hashedBlock = hashedBlock + str(value)
-
     print(hashedBlock)
+    rewardTransaction = {
+        'sender': 'MINNING',
+        'recipient': owner,
+        'amount': MINNINGREWARD 
+    }
     block = {
         'previousHash': 'XYZ', # entered dummy for educational purposes 
         'index': len(blockchain), 
         'transactions': openTransactions,
     } 
     blockchain.append(block)
+    return True
 
 
 def getTransactionValue():
@@ -126,7 +148,8 @@ while waitingForUserInput:
         addTransaction(recipient, amount = amount)
         print(openTransactions)
     elif userChoice == '2':
-        mineBlock()
+        if mineBlock():
+            openTransactions = []
     elif userChoice == '3':
         printBlockchainElements()
     elif userChoice == '4':
@@ -151,6 +174,7 @@ while waitingForUserInput:
         printBlockchainElements()
         print('Invalid blockchain!')
         break
+    print(getBalance('Dominik'))
 else:
     print('User Left!')
 
