@@ -1,23 +1,42 @@
 # Create a list of 'Person' dicitionaries with a name, age and list of hobbies for each person.
-person = []
+from operator import index
+import random
+
+
+persons = []
 names = ['Dominik', 'Piotr', 'Paul', 'Anna', 'Natalia', 'Paulina']
-age = []
+age = [18, 22, 23, 34, 45, 50]
 hobbies = ['Programming', 'gymnastic', 'English', 'Gardening', 'Art']
 newDictionary = {}
-
+hobbyNo = random.randrange(0, 5)
 def dictionaryCreator(name, age, hobbiesList):
     newDictionary = {
         'name': str(name),
         'age': int(age),
         'hobbies': hobbiesList
     }
-    person.append(newDictionary)
+    persons.append(newDictionary)
+
+
 def personSeeder():
-    for name in names:
-        dictionaryCreator(names[name], age[name], hobbies[name])
-    else:
-        print(person)
-print(age)
-print(person)
-dictionaryCreator(names[0], 22, hobbies[0:2])
+    index = 0
+    while index < len(names):
+        dictionaryCreator(names[index], age[index], hobbies[0:5])
+        index += 1
+    
 personSeeder()
+print(persons)
+
+# Use a list comperhension to convert this list of persons into a list of names
+personName = [person['name'] for person in persons]
+print(personName)
+
+# Use a list comperhension to check whether all persons are older than 20.
+personAge = [person['age'] for person in persons if age > 20]
+print(personAge)
+
+# copy the person list such that you can safely edit name of the first person
+personCopy = persons[:]
+personCopy[0]['name'] = 'Krzysztof'
+print(personCopy[0])
+print(persons[0])
