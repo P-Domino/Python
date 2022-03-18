@@ -36,7 +36,13 @@ personAge = [person['age'] for person in persons if age > 20]
 print(personAge)
 
 # copy the person list such that you can safely edit name of the first person
-personCopy = persons[:]
+personCopy = [person.copy() for person in persons]
 personCopy[0]['name'] = 'Krzysztof'
 print(personCopy[0])
 print(persons[0])
+
+# Unpack the persons of the orginal list into different variables and output these variables
+
+p1 = persons[0]
+p2 = persons[1]
+p3 = persons[2]
