@@ -61,10 +61,8 @@ def loadData():
             openTransactions = updated_Transactions
     except IOError:
         print('File not found!')
-    except ValueError:
-        print('Value error!')
-    except:
-        print('Wildcard!')
+    finally: 
+        print('Cleanup!')
 
 # Executing immidiately as soons as we run a script
 loadData()
