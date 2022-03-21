@@ -10,15 +10,15 @@ from hashUtil import hash_string_256, hash_block
 # The reward we give to miners (for creating a new block)
 MINING_REWARD = 10
 
-# Our starting block for the blockchain
-genesis_block = {
-    'previous_hash': '',
-    'index': 0,
-    'transactions': [],
-    'proof': 100
-}
+# # Our starting block for the blockchain
+# genesis_block = {
+#     'previous_hash': '',
+#     'index': 0,
+#     'transactions': [],
+#     'proof': 100
+# }
 # Initializing our (empty) blockchain list
-blockchain = [genesis_block]
+blockchain = []
 # Unhandled transactions
 openTransactions = []
 # We are the owner of this blockchain node, hence this is our identifier (e.g. for sending coins)
@@ -60,7 +60,17 @@ def loadData():
                 updated_Transactions.append(updated_Transaction)
             openTransactions = updated_Transactions
     except IOError:
-        print('File not found!')
+        # Our starting block for the blockchain
+        genesis_block = {
+            'previous_hash': '',
+            'index': 0,
+            'transactions': [],
+            'proof': 100
+        }
+        # Initializing our (empty) blockchain list
+        blockchain = [genesis_block]
+        # Unhandled transactions
+        openTransactions = []
     finally: 
         print('Cleanup!')
 
@@ -69,18 +79,20 @@ loadData()
 
 
 def saveData():
-    with open('blockchain.txt', mode='w') as f:
-        # Logic to save blockchain with json
-        f.write(json.dumps(blockchain))
-        f.write('\n')
-        f.write(json.dumps(openTransactions))
-        # saving to file with import of pickle
-        # saveData = {
-        #     'chain': blockchain,
-        #     'ot': openTransactions
-        # }
-        # f.write(pickle.dumps(saveData))
-
+    try:
+        with open('blockchain.txt', mode='w') as f:
+            # Logic to save blockchain with json
+            f.write(json.dumps(blockchain))
+            f.write('\n')
+            f.write(json.dumps(openTransactions))
+            # saving to file with import of pickle
+            # saveData = {
+            #     'chain': blockchain,
+            #     'ot': openTransactions
+            # }
+            # f.write(pickle.dumps(saveData))
+    except IOError:
+        print('Saving failed!')
 
 
 def valid_proof(transactions, last_hash, proof):
